@@ -4,11 +4,19 @@ import Subscription from '../models/Subscription';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
 
+import Queue from '../../libs/Queue';
+
+import SubscriptionMail from '../jobs/SubscriptionMail';
+
 class SubscriptionController {
   async store(req, res) {
     const { meetupId } = req.params;
 
     const meetup = await Meetup.findByPk(meetupId);
+
+    if (!meetup) {
+      return res.status(400).json({ error: 'Esta meetup não existe' });
+    }
 
     if (meetup.userId === req.userId) {
       return res.status(401).json({
@@ -17,7 +25,7 @@ class SubscriptionController {
     }
 
     if (meetup.past) {
-      return res.status(400).json({
+      return res.status(401).json({
         error: 'Não é possível se inscrever em uma meetup que já aconteceu',
       });
     }
@@ -63,7 +71,9 @@ class SubscriptionController {
       meetupId,
     });
 
-    // ENVIAR EMAIL
+    // Envia Email
+    const user = await User.findOne({ where: { id: req.userId } });
+    await Queue.add(SubscriptionMail.key, { user, meetup });
 
     return res.json(subscription);
   }

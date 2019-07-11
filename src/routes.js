@@ -23,6 +23,7 @@ routes.use(verificaToken);
 
 routes.get('/organized', OrganizedController.index);
 routes.get('/subscriptions', SubscriptionController.index);
+routes.get('/meetups', MeetupController.index);
 
 routes.post('/files', upload.single('file'), FileController.store);
 routes.post('/meetups', MeetupController.store);
