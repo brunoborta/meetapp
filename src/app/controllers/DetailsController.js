@@ -1,18 +1,14 @@
-import { Op } from 'sequelize';
-
 import Meetup from '../models/Meetup';
 import File from '../models/File';
 
-class OrganizedController {
+class DetailsController {
   async index(req, res) {
-    const meetups = await Meetup.findAll({
+    const { meetupId } = req.params;
+    const meetup = await Meetup.findOne({
       where: {
         userId: req.userId,
-        date: {
-          [Op.gt]: new Date(),
-        },
+        id: meetupId,
       },
-      order: ['date'],
       include: [
         {
           model: File,
@@ -22,8 +18,8 @@ class OrganizedController {
       ],
     });
 
-    return res.json(meetups);
+    return res.json(meetup);
   }
 }
 
-export default new OrganizedController();
+export default new DetailsController();

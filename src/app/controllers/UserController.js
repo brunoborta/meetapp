@@ -86,11 +86,9 @@ class UserController {
     const { id, name } = await user.update(req.body);
 
     return res.json({
-      User: {
-        id,
-        name,
-        email,
-      },
+      id,
+      name,
+      email,
     });
   }
 }

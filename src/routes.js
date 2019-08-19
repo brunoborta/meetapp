@@ -7,6 +7,7 @@ import FileController from './app/controllers/FileController';
 import MeetupController from './app/controllers/MeetupController';
 import OrganizedController from './app/controllers/OrganizedController';
 import SubscriptionController from './app/controllers/SubscriptionController';
+import DetailsController from './app/controllers/DetailsController';
 
 import verificaToken from './app/middlewares/verificaToken';
 
@@ -24,6 +25,7 @@ routes.use(verificaToken);
 routes.get('/organized', OrganizedController.index);
 routes.get('/subscriptions', SubscriptionController.index);
 routes.get('/meetups', MeetupController.index);
+routes.get('/meetups/:meetupId/details', DetailsController.index);
 
 routes.post('/files', upload.single('file'), FileController.store);
 routes.post('/meetups', MeetupController.store);
