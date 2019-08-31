@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import Subscription from '../models/Subscription';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
+import File from '../models/File';
 
 import Queue from '../../libs/Queue';
 
@@ -101,12 +102,37 @@ class SubscriptionController {
               as: 'organizer',
               attributes: ['id', 'name', 'email'],
             },
+            {
+              model: File,
+              as: 'banner',
+              attributes: ['id', 'convertedName', 'url'],
+            },
           ],
         },
       ],
     });
 
     return res.json(meetups);
+  }
+
+  async delete(req, res) {
+    const { meetupId } = req.params;
+    const inscription = await Subscription.findOne({
+      where: {
+        meetupId,
+        userId: req.userId,
+      },
+    });
+
+    if (!inscription) {
+      return res.status(401).json({
+        error:
+          'Você só pode cancelar uma inscrição se estiver inscrito na meetup!',
+      });
+    }
+
+    await inscription.destroy();
+    return res.json();
   }
 }
 

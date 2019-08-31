@@ -4,6 +4,7 @@ import * as yup from 'yup';
 
 import Meetup from '../models/Meetup';
 import User from '../models/User';
+import File from '../models/File';
 
 class MeetupController {
   async store(req, res) {
@@ -118,6 +119,11 @@ class MeetupController {
           model: User,
           as: 'organizer',
           attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: File,
+          as: 'banner',
+          attributes: ['id', 'convertedName', 'url'],
         },
       ],
       limit: ITEMS_PER_PAGE,
